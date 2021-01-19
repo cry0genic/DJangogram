@@ -1,3 +1,1 @@
 # DJangogram
-# DJangogram
-# DJangogram
