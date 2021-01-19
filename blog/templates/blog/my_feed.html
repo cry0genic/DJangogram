@@ -1,23 +1,7 @@
 {% extends "blog/base.html" %}
 {% block content %}
-	<h1 class="mb-3">Posts by {{ view.kwargs.username }} ({{ page_obj.paginator.count }})</h1>
-	{% if user != posts.first.author %}
-		{% if posts.first.author.profile in user.profile.follows.all %}
-			<form action="{% url 'unfollow-user' %}" method="POST">
-				{% csrf_token %}
-				<button type="submit" name="post_author_profile_id" value="{{ posts.first.author.profile.id }}" >Unfollow </button>
-			</form>
-			{% else %}
-				<form action="{% url 'follow-user' %}" method="POST">
-					{% csrf_token %}
-					<button type="submit" name="post_author_profile_id" value="{{ posts.first.author.profile.id }}" >Follow </button>
-				</form> <br>
-			{% endif %}
-
-		
-	{% endif %}
-	<br>
-	{% for post in posts %}
+{% for post in posts %}
+	{% if post.author.profile in profiles %}
 		<article class="media content-section">
 			<img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
 		  <div class="media-body">
@@ -31,10 +15,9 @@
 		    <p class="article-content">{{ post.content }}</p>
 		  </div>
 		</article>
-	{% endfor %}
+	{% endif %}
+{% endfor %}
 
-	<!--Pagination -->
-	   
 	{% if is_paginated %}
 
 		{% if page_obj.has_previous %}
@@ -56,4 +39,6 @@
 		{% endif %}
 
 	{% endif %}
+
+
 {% endblock content %}

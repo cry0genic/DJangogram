@@ -12,5 +12,6 @@ urlpatterns = [
 	path('about/', views.about, name='blog-about'),
 	path('follow-user/', views.follow_user, name='follow-user'),
 	path('unfollow-user/', views.unfollow_user, name='unfollow-user'),
+	path('my-feed/', views.my_feed, name='my-feed'),
 	
 ]

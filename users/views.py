@@ -2,12 +2,12 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
-
+import openpyxl
 from .models import Profile
 
 def register(request):
 	if request.method == "POST":
-		form = UserRegisterForm(request.POST) #Creates the form with the data contained in request.POST
+		form = UserRegisterForm(request.POST) 
 		if form.is_valid():
 			form.save()
 			messages.success(request, 'Your account has been created. You can now login!')
@@ -16,7 +16,7 @@ def register(request):
 		form = UserRegisterForm()
 	return render(request, 'users/register.html', {'form': form, 'title': 'Register'})
 
-@login_required #Decorator to make sure this view is blocked for those not logged in
+@login_required 
 def profile(request):
 	if request.method == "POST":
 		u_form = UserUpdateForm(request.POST, instance=request.user)
@@ -37,3 +37,32 @@ def profile(request):
 	}
 	return render(request, 'users/profile.html', context)
 
+
+@permission_required('GET') #dbt
+def get_data(request):
+	response = HttpResponse(content_type='application/ms-excel')
+	response['Content-Disposition'] = 'attachment; filename="profile_data.xlsx"'
+
+	wb = openpyxl.Workbook()
+	ws = wb.active
+	ws.title = 'Profile Data'
+
+	profiles = Profile.objects.all()
+	row_data = [
+		['Profile ID', 'Username', 'E-mail', 'Following']
+	]
+	for profile in profiles:
+		following_profiles = profile.follows.all()
+		followed_usernames = []
+		for following_profile in following_profiles:
+			followed_usernames.append(following_profile.user.username)
+		followed_usernames_str = ','.join(followed_usernames)
+
+		row = [profile.id, profile.user.username, profile.user.email, followed_usernames_str]
+		row_data.append(row)
+
+	for line in row_data: #dbt
+		ws.append(line)
+
+	wb.save(response)
+	return response
