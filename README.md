@@ -9,3 +9,5 @@ You will be building a mini social media site with a few basic features. There w
 - Allow users to follow each other. Think about how you’ll implement this using Django’s models.
 - Make it possible to edit and delete posts. Think about the implications of this. How would you prevent cyber-bullying/cyber-crime caused by this feature?
 - Let the user see a feed on the homepage. This feed should include posts by people the user follows.
+- Create a feature where staff and site admins can generate a report containing all of the basic profile data of each person registered on the site. The profile should be in the form of an excel sheet and we suggest using Openpyxl to get this done in python.
+- Extend the login system. Make it so that a person can also log in with Google. Use Google's API to provide OAUTH 2.0 based log-in.
